@@ -113,6 +113,7 @@ async function syncWeChatSteps(account, password, steps) {
   const loginRes = await fetch(loginUrl, {
     method: "POST",
     headers: loginHeaders,
+    signal: AbortSignal.timeout(8000),
     body: loginParams.toString()
   });
 
@@ -152,6 +153,9 @@ async function syncWeChatSteps(account, password, steps) {
     method: "POST",
     headers: {
       "apptoken": app_token,
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    signal: AbortSignal.timeout(8000),
       "Content-Type": "application/x-www-form-urlencoded"
     },
     body: uploadBody
