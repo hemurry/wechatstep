@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="步数助手">
+  <title>微信运动步数助手</title>
+  <style>
+    :root {
+      --primary: #07C160;
+      --primary-hover: #06AD56;
+      --bg: #F2F4F7;
+      --card: #FFFFFF;
+      --text: #191919;
+      --text-sub: #8C8C8C;
+      --border: rgba(0, 0, 0, 0.08);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --primary: #07C160;
+        --primary-hover: #06AD56;
+        --bg: #121212;
+        --card: #1E1E1E;
+        --text: #EDEDED;
+        --text-sub: #777777;
+        --border: rgba(255, 255, 255, 0.1);
+      }
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body {
+      margin: 0;
+      padding: env(safe-area-inset-top) 18px env(safe-area-inset-bottom);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    .header {
+      text-align: center;
+      margin: 36px 0 24px;
+    }
+    .header h1 {
+      font-size: 24px;
+      margin: 0 0 8px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+    .header p {
+      color: var(--text-sub);
+      font-size: 13px;
+      margin: 0;
+    }
+    .card {
+      background: var(--card);
+      border-radius: 20px;
+      padding: 24px 20px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+      margin-bottom: 20px;
+      border: 1px solid var(--border);
+    }
+    .form-item {
+      margin-bottom: 18px;
+    }
+    .form-item label {
+      display: block;
+      font-size: 13px;
+      color: var(--text-sub);
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+    .input-box {
+      width: 100%;
+      height: 48px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(128, 128, 128, 0.05);
+      color: var(--text);
+      padding: 0 14px;
+      font-size: 16px;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .input-box:focus {
+      border-color: var(--primary);
+      background: transparent;
+    }
+    .quick-tags {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .tag {
+      height: 34px;
+      border-radius: 9px;
+      background: rgba(7, 193, 96, 0.1);
+      color: var(--primary);
+      border: none;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .tag:active {
+      background: rgba(7, 193, 96, 0.2);
+    }
+    .btn-submit {
+      width: 100%;
+      height: 50px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      font-size: 17px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 10px;
+      box-shadow: 0 6px 18px rgba(7, 193, 96, 0.3);
+      transition: transform 0.1s, background 0.2s;
+    }
+    .btn-submit:active {
+      transform: scale(0.98);
+      background: var(--primary-hover);
+    }
+    .btn-submit:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .status-msg {
+      margin-top: 18px;
+      padding: 14px;
+      border-radius: 14px;
+      font-size: 14px;
+      line-height: 1.5;
+      display: none;
+      word-break: break-all;
+    }
+    .tip-box {
+      font-size: 12px;
+      color: var(--text-sub);
+      line-height: 1.6;
+      text-align: center;
+      margin-top: auto;
+      padding-bottom: 24px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>微信运动步数助手</h1>
+    <p>Zepp Life 官方通道直推 · 秒级刷新</p>
+  </div>
+
+  <div class="card">
+    <div class="form-item">
+      <label>Zepp Life 账号 (邮箱或手机号)</label>
+      <input type="text" id="account" class="input-box" placeholder="例如: your_email@163.com">
+    </div>
+    <div class="form-item">
+      <label>Zepp Life 密码</label>
+      <input type="password" id="password" class="input-box" placeholder="输入账号独立密码">
+    </div>
+    <div class="form-item">
+      <label>目标步数</label>
+      <input type="number" id="steps" class="input-box" placeholder="建议 18000 ~ 35000">
+      <div class="quick-tags">
+        <button class="tag" onclick="setStep(18888)">1.8w</button>
+        <button class="tag" onclick="setStep(25000)">2.5w</button>
+        <button class="tag" onclick="setStep(33333)">3.3w</button>
+        <button class="tag" onclick="setRandom()">随机</button>
+      </div>
+    </div>
+
+    <button id="submitBtn" class="btn-submit" onclick="submitStep()">一键同步到微信</button>
+    <div id="statusMsg" class="status-msg"></div>
+  </div>
+
+  <div class="tip-box">
+    💡 提示：在 Safari 点击底部【分享】➔【添加到主屏幕】，即可像原生小程序一样使用。
+  </div>
+
+  <script>
+    window.onload = function() {
+      if (localStorage.getItem('zepp_account')) {
+        document.getElementById('account').value = localStorage.getItem('zepp_account');
+      }
+      if (localStorage.getItem('zepp_password')) {
+        document.getElementById('password').value = localStorage.getItem('zepp_password');
+      }
+      setRandom();
+    };
+
+    function setStep(val) {
+      document.getElementById('steps').value = val;
+    }
+
+    function setRandom() {
+      const min = 19200, max = 28600;
+      document.getElementById('steps').value = Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    async function submitStep() {
+      const account = document.getElementById('account').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const steps = document.getElementById('steps').value.trim();
+      const btn = document.getElementById('submitBtn');
+      const msg = document.getElementById('statusMsg');
+
+      if (!account || !password) {
+        alert('请完整填写 Zepp Life 账号与密码');
+        return;
+      }
+
+      localStorage.setItem('zepp_account', account);
+      localStorage.setItem('zepp_password', password);
+
+      btn.disabled = true;
+      btn.innerText = '正在同步到微信...';
+      msg.style.display = 'none';
+
+      try {
+        const resp = await fetch('/api/update-steps', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ account, password, steps })
+        });
+        const res = await resp.json();
+
+        msg.style.display = 'block';
+        if (res.success) {
+          msg.style.background = 'rgba(7, 193, 96, 0.12)';
+          msg.style.color = '#07C160';
+          msg.innerHTML = '🎉 ' + res.message;
+        } else {
+          msg.style.background = 'rgba(255, 77, 79, 0.12)';
+          msg.style.color = '#FF4D4F';
+          msg.innerHTML = '❌ ' + res.message;
+        }
+      } catch (e) {
+        msg.style.display = 'block';
+        msg.style.background = 'rgba(255, 77, 79, 0.12)';
+        msg.style.color = '#FF4D4F';
+        msg.innerHTML = '❌ 网络请求失败: ' + e.message;
+      } finally {
+        btn.disabled = false;
+        btn.innerText = '一键同步到微信';
+      }
+    }
+  </script>
+</body>
+</html>
